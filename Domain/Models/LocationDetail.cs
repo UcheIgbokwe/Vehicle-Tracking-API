@@ -7,9 +7,9 @@ namespace Domain.Models
     public class LocationDetail
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        // [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column(Order = 1)]
-        public int LocationId { get; set; }
+        public Guid LocationId { get; set; }
         public decimal Latitude { get; set; }
         public decimal Longitude { get; set; }
 
@@ -17,7 +17,7 @@ namespace Domain.Models
         public DateTime UpdateTime { get; set; }
 
         [ForeignKey("VehicleDevice")]
-        public int DeviceID { get; set; }
+        public Guid DeviceID { get; set; }
         public virtual VehicleDevice VehicleDevice { get; set; }
     }
 }

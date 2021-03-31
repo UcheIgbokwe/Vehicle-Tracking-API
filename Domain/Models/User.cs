@@ -1,27 +1,12 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 
 namespace Domain.Models
 {
-    public class User
+    public class User : IdentityUser
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int UserID { get; set; }
-
-        public string UserName { get; set; }
-
-        [DataType(DataType.EmailAddress)]
-        public string Email { get; set; }
-
-        [DataType(DataType.Password)]
-        public string Password { get; set; }
-
-        [ForeignKey("UserRole")]
-        public int RoleID { get; set; }
-        public virtual UserRole UserRole { get; set; }
-
         public virtual ICollection<Vehicle> Vehicles { get; set; }
     }
 }
