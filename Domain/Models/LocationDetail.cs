@@ -7,7 +7,6 @@ namespace Domain.Models
     public class LocationDetail
     {
         [Key]
-        // [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column(Order = 1)]
         public Guid LocationId { get; set; }
         public decimal Latitude { get; set; }

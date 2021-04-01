@@ -8,7 +8,6 @@ namespace Domain.Models
     public class VehicleDevice
     {
         [Key]
-        // [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid DeviceID { get; set; }
 
         public string DeviceName { get; set; }
