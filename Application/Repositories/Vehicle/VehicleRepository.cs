@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Application.DTO;
@@ -28,6 +29,31 @@ namespace Application.Repositories.Vehicle
         {
             return await _dbContext.Users.FirstOrDefaultAsync(x => x.Email == email).ConfigureAwait(false);
         }
+
+        public async Task<bool> CheckVehicleDeviceviaUser(string email, string deviceId)
+        {
+            bool vehicleExist = false;
+            var guidDeviceId = Guid.Parse(deviceId);
+            try
+            {
+                var userResult = await CheckUserExist(email).ConfigureAwait(false);
+                if (userResult != null)
+                {
+                    var vehicleDeviceResult = _dbContext.VehicleDevices.FirstOrDefaultAsync(x => x.DeviceID == guidDeviceId).Result;
+                    if (vehicleDeviceResult != null)
+                    {
+                        return vehicleExist = _dbContext.Vehicles.Where(x => x.User == userResult && x.VehicleID == vehicleDeviceResult.VehicleID).Any();
+                    }
+                }
+                return vehicleExist;
+            }
+            catch (System.Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return vehicleExist;
+            }
+        }
+
         public async Task<int> CheckVehicleExist(string vehicleNumberPlate)
         {
             return await _dbContext.Vehicles.CountAsync(x => x.VehicleNumberPlate == vehicleNumberPlate).ConfigureAwait(false);
@@ -42,9 +68,32 @@ namespace Application.Repositories.Vehicle
             throw new NotImplementedException();
         }
 
-        public Task<bool> RecordVehiclePosition(VehiclePositionDTO vehiclePosition)
+        public async Task<bool> RecordVehiclePosition(VehiclePositionDTO vehiclePosition)
         {
-            throw new NotImplementedException();
+            var guidDeviceId = Guid.Parse(vehiclePosition.DeviceID);
+            try
+            {
+                if (vehiclePosition != null)
+                {
+                    var vehiclePositionModel = new LocationDetail()
+                    {
+                        Latitude = vehiclePosition.Latitude,
+                        Longitude = vehiclePosition.Longitude,
+                        UpdateTime = DateTime.Now,
+                        DeviceID = guidDeviceId
+                    };
+                    _unitOfWork.LocationDetailRepository.Add(vehiclePositionModel);
+                    var result = await _unitOfWork.CommitAsync().ConfigureAwait(false);
+                    if (result > 0)
+                        return true;
+                }
+                return false;
+            }
+            catch (System.Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return false;
+            }
         }
 
         public async Task<bool> RegisterVehicle(VehicleDTO vehicle)

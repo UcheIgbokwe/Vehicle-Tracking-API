@@ -15,6 +15,6 @@ namespace Application.Repositories.Vehicle
 
         Task<int> CheckVehicleExist(string vehicleNumberPlate);
         Task<User> CheckUserExist(string emailId);
-        //Task<int> CheckUserWithVehicleDevice(int userID, int deviceId);
+        Task<bool> CheckVehicleDeviceviaUser(string userID, string deviceId);
     }
 }

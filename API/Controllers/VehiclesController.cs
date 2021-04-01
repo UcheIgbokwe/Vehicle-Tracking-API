@@ -55,5 +55,38 @@ namespace API.Controllers
                 return BadRequest(ex);
             }
         }
+
+        /*
+        * {
+	        
+            "UserID": "uche@test.com",        
+            "DeviceId": "65EC0292-409D-46E8-96A2-AB2AE86E972A",
+	        "Latitude": 6.412850,
+            "Longitude": 4.087600,
+          }
+         */
+        // POST: api/Vehicles
+        [Authorize]
+        [HttpPost("registerVehiclePosition")]
+        public async Task<ActionResult> RegisterVehiclePosition(VehiclePositionDTO vehiclePosition)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                bool result = await _vehicleService.RecordVehiclePosition(vehiclePosition).ConfigureAwait(false);
+                if (result)
+                    return StatusCode(201);
+                else
+                    return BadRequest(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
     }
 }
