@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.DTO;
+using Domain.Models;
 
 namespace Application.Repositories.Vehicle
 {
@@ -13,7 +14,7 @@ namespace Application.Repositories.Vehicle
         Task<List<VehiclePositionDTO>> GetVehiclePosition(string userID, string deviceId, DateTime startDate, DateTime endDate);
 
         Task<int> CheckVehicleExist(string vehicleNumberPlate);
-        //Task<int> CheckUserExist(string emailId);
+        Task<User> CheckUserExist(string emailId);
         //Task<int> CheckUserWithVehicleDevice(int userID, int deviceId);
     }
 }

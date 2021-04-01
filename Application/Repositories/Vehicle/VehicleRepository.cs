@@ -7,6 +7,7 @@ using Application.UnitOfWork;
 using Domain.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Persistence;
 
 namespace Application.Repositories.Vehicle
@@ -15,10 +16,17 @@ namespace Application.Repositories.Vehicle
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly DataContext _dbContext;
-        public VehicleRepository(IUnitOfWork unitOfWork, DataContext dbContext)
+        private readonly ILogger<VehicleRepository> _logger;
+        public VehicleRepository(IUnitOfWork unitOfWork, DataContext dbContext, ILogger<VehicleRepository> logger)
         {
             _unitOfWork = unitOfWork;
             _dbContext = dbContext;
+            _logger = logger;
+        }
+
+        public async Task<User> CheckUserExist(string email)
+        {
+            return await _dbContext.Users.FirstOrDefaultAsync(x => x.Email == email).ConfigureAwait(false);
         }
         public async Task<int> CheckVehicleExist(string vehicleNumberPlate)
         {
@@ -43,13 +51,15 @@ namespace Application.Repositories.Vehicle
         {
             try
             {
-               if (vehicle != null)
+                var userResult = await CheckUserExist(vehicle.User.Id).ConfigureAwait(false);
+                if (vehicle != null)
                 {
                     var newVehicle = new Domain.Models.Vehicle()
                     {
                         VehicleName = vehicle.VehicleName,
                         VehicleNumberPlate = vehicle.VehicleNumberPlate,
-                        UpdateTime = vehicle.UpdateTime
+                        UpdateTime = DateTime.Now,
+                        User = userResult
                     };
                     _unitOfWork.VehicleRepository.Add(newVehicle);
 
@@ -64,10 +74,11 @@ namespace Application.Repositories.Vehicle
                     if (result > 0)
                         return true;
                 }
-                return false; 
+                return false;
             }
             catch (System.Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return false;
             }
         }

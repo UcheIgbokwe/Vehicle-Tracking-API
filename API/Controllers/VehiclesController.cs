@@ -23,7 +23,7 @@ namespace API.Controllers
          * {
 	            "User": 
     	            { 
-    		            "Id" : "622e664e-7101-4e47-a000-78b64b40965f"
+    		            "email" : "uche@test.com"
     	            },
                 "VehicleName": "KIA",
                 "VehicleNumberPlate": "KJA2021NGA",
@@ -34,7 +34,7 @@ namespace API.Controllers
             }
          */
         // POST: api/Vehicles
-        [AllowAnonymous]
+        [Authorize]
         [HttpPost("registerVehicle")]
         public async Task<ActionResult> RegisterVehicle(VehicleDTO vehicle)
         {

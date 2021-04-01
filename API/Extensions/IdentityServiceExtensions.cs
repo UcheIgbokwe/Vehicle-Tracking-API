@@ -19,7 +19,8 @@ namespace API.Extensions
             .AddSignInManager<SignInManager<User>>();
 
             services.Configure<JwtConfig>(config.GetSection("JwtConfig"));
-            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(config["JwtConfig:Secret"]));
+            var checkKey = config["JwtConfig:Secret"];
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JwtConfig:Secret"]));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(opt =>
                     {
