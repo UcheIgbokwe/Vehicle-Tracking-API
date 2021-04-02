@@ -10,8 +10,8 @@ namespace Application.Repositories.Vehicle
     {
         Task<bool> RegisterVehicle(VehicleDTO vehicle);
         Task<bool> RecordVehiclePosition(VehiclePositionDTO vehiclePosition);
-        Task<VehiclePositionDTO> GetCurrentVehiclePosition(string userID, string deviceId);
-        Task<List<VehiclePositionDTO>> GetVehiclePosition(string userID, string deviceId, DateTime startDate, DateTime endDate);
+        Task<VehiclePositionDTO> GetCurrentPosition(string userID, string deviceId);
+        Task<List<VehiclePositionDTO>> GetVehiclePositionByDate(string userID, string deviceId, DateTime startDate, DateTime endDate);
 
         Task<int> CheckVehicleExist(string vehicleNumberPlate);
         Task<User> CheckUserExist(string emailId);

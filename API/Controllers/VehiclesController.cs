@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.Services.Vehicle;
 using Application.DTO;
@@ -19,7 +20,7 @@ namespace API.Controllers
         }
 
         // Register a new vehicle
-        /* Json body
+        /* 
          * {
 	            "User": 
     	            { 
@@ -33,7 +34,7 @@ namespace API.Controllers
                 }
             }
          */
-        // POST: api/Vehicles
+        // POST: api/Vehicles/registerVehicle
         [Authorize]
         [HttpPost("registerVehicle")]
         public async Task<ActionResult> RegisterVehicle(VehicleDTO vehicle)
@@ -56,16 +57,16 @@ namespace API.Controllers
             }
         }
 
+        // Register a vehicle's position
         /*
         * {
-	        
             "UserID": "uche@test.com",        
             "DeviceId": "65EC0292-409D-46E8-96A2-AB2AE86E972A",
 	        "Latitude": 6.412850,
             "Longitude": 4.087600,
           }
          */
-        // POST: api/Vehicles
+        // POST: api/Vehicles/registerVehiclePosition
         [Authorize]
         [HttpPost("registerVehiclePosition")]
         public async Task<ActionResult> RegisterVehiclePosition(VehiclePositionDTO vehiclePosition)
@@ -87,6 +88,73 @@ namespace API.Controllers
             {
                 return BadRequest(ex);
             }
+        }
+
+        // Get a Vehicle's position.
+        // GET: /api/Vehicles?userID={email}&deviceId={id}
+        [Authorize]
+        [HttpGet]
+        public async Task<ActionResult> GetCurrentPosition(string userID, string deviceId)
+        {
+            VehiclePositionDTO vehiclePosition = null;
+            try
+            {
+                if (!string.IsNullOrEmpty(userID) && !string.IsNullOrEmpty(deviceId))
+                {
+                    vehiclePosition = await _vehicleService.GetCurrentPosition(userID, deviceId).ConfigureAwait(false);
+                    if (vehiclePosition == null)
+                    {
+                        return NotFound();
+                    }
+                    // Google Map Api for local name                     
+                    vehiclePosition.Local = await _vehicleService.GetLocation(vehiclePosition.Latitude.ToString(),vehiclePosition.Longitude.ToString()).ConfigureAwait(false);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+
+            return Ok(vehiclePosition);
+        }
+
+        // Get a Vehicle's position using date range.
+        // GET: /api/Vehicles/byDate?userID={email}&deviceId={id}&startDate={sd}&endDate={ed}
+        [Authorize]
+        [HttpGet("byDate")]
+        public async Task<ActionResult> GetCurrentPositionByDate(string userID, string deviceId, DateTime startDate, DateTime endDate)
+        {
+            List<VehiclePositionDTO> vehiclePosition = null;
+            try
+            {
+                if (!string.IsNullOrEmpty(userID) && !string.IsNullOrEmpty(deviceId))
+                {
+                    vehiclePosition = await _vehicleService.GetVehiclePositionByDate(userID, deviceId, startDate, endDate).ConfigureAwait(false);
+                    if (vehiclePosition == null)
+                    {
+                        return NotFound();
+                    }
+                    foreach (var item in vehiclePosition)
+                    {
+                        // Google Map Api for local name                     
+                        item.Local = await _vehicleService.GetLocation(item.Latitude.ToString(),item.Longitude.ToString()).ConfigureAwait(false);
+                    }
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+
+            return Ok(vehiclePosition);
         }
     }
 }
