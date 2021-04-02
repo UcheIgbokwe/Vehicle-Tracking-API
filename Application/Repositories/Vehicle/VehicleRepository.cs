@@ -184,7 +184,7 @@ namespace Application.Repositories.Vehicle
             try
             {
                 var userResult = await CheckUserExist(vehicle.User.Id).ConfigureAwait(false);
-                if (vehicle != null)
+                if (vehicle != null && userResult != null)
                 {
                     var newVehicle = new Domain.Models.Vehicle()
                     {
