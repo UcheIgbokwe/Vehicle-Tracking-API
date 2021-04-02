@@ -179,7 +179,6 @@ namespace Application.Repositories.Vehicle
                 return false;
             }
         }
-
         public async Task<bool> RegisterVehicle(VehicleDTO vehicle)
         {
             try

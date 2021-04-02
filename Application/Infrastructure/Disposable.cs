@@ -14,7 +14,7 @@ namespace Application.Infrastructure
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this);
+            //GC.SuppressFinalize(this);
         }
         private void Dispose(bool disposing)
         {
@@ -26,7 +26,6 @@ namespace Application.Infrastructure
         }
         protected virtual void DisposeCore()
         {
-
         }
     }
 }
