@@ -9,6 +9,7 @@ Follow the steps below to run the application:
 To fully utilise the GPS location, kindly replace the GOOGLE_API_KEY placeholder with a valid Google API key 
 in the Gmap:APIKey section provided the appsettings.Development.json file.
 
+
 # Step 2:
 Open the application in Visual Studio Code or any preferred IDE and navigate to the API folder.
 
